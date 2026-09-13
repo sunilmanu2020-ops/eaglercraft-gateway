@@ -1,7 +1,7 @@
 config-version = "2.7"
 online-mode = false
 [servers]
-minekeep = "testservertester1.minekeep.gg:25565"
+minekeep = "wccschoolsmp.minehut.gg:25565"
 try = ["minekeep"]
 
 [forced-hosts]
