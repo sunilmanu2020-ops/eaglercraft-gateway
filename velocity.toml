@@ -1,1 +1,28 @@
+config-version = "2.7"
 
+[servers]
+minekeep = "testservertester1.minekeep.gg:19132"
+try = ["minekeep"]
+
+[forced-hosts]
+
+[advanced]
+compression-threshold = 256
+compression-level = -1
+login-ratelimit = 3000
+connection-timeout = 5000
+read-timeout = 30000
+haproxy-protocol = false
+tcp-fast-open = false
+bungee-plugin-message-channel = true
+show-ping-requests = false
+failover-on-unexpected-server-disconnect = true
+announce-forge = false
+log-command-executions = false
+log-player-connections = true
+
+[query]
+enabled = false
+port = 25577
+map = "Velocity"
+show-plugins = false
