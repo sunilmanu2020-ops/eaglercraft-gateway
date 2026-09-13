@@ -1,7 +1,7 @@
 config-version = "2.7"
 
 [servers]
-minekeep = "testservertester1.minekeep.gg:19132"
+minekeep = "testservertester1.minekeep.gg:25565"
 try = ["minekeep"]
 
 [forced-hosts]
