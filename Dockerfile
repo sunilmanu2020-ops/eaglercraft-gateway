@@ -6,20 +6,11 @@ RUN apt-get update && apt-get install -y curl jq
 
 RUN UA="eaglercraft-gateway/1.0 (contact: your-email@example.com)" && \
     VERSION="3.5.1" && \
-    LATEST_BUILD=$(curl -s -H "User-Agent: $UA" https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds | jq -r 'map(select(.channel == "STABLE")) | .[0] | .id') && \
+    echo "--- Fetching builds list ---" && \
+    curl -sf -H "User-Agent: $UA" "https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds" -o builds.json && \
+    cat builds.json && \
+    LATEST_BUILD=$(jq -r 'map(select(.channel == "STABLE")) | .[0] | .id' builds.json) && \
     echo "BUILD: $LATEST_BUILD" && \
-    DOWNLOAD_URL=$(curl -s -H "User-Agent: $UA" https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds/$LATEST_BUILD | jq -r '.downloads."server:default".url') && \
-    echo "URL: $DOWNLOAD_URL" && \
-    curl -f -H "User-Agent: $UA" -o velocity.jar "$DOWNLOAD_URL" && \
-    ls -la velocity.jar
-
-RUN mkdir -p plugins && \
-    curl -fL -o plugins/EaglerXServer.jar https://github.com/lax1dude/eaglerxserver/releases/latest/download/EaglerXServer.jar && \
-    ls -la plugins/EaglerXServer.jar
-
-COPY velocity.toml /server/velocity.toml
-COPY eula.txt /server/eula.txt
-
-EXPOSE 8080
-
-CMD ["java", "-jar", "velocity.jar"]
+    test "$LATEST_BUILD" != "null" && \
+    echo "--- Fetching build details ---" && \
+    curl -sf -H "User-Agent: $UA" "https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds/$LATEST_BUILD" -o build.json && \
