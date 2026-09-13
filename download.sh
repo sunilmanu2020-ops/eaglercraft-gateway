@@ -1,12 +1,19 @@
 #!/bin/sh
-set -e
 
 UA="eaglercraft-gateway/1.0 (contact: your-email@example.com)"
 VERSION="3.5.1"
 
 echo "--- Fetching builds list ---"
-curl -sf -H "User-Agent: $UA" "https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds" -o builds.json
+HTTP_CODE=$(curl -s -w "%{http_code}" -H "User-Agent: $UA" "https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds" -o builds.json)
+echo "HTTP STATUS: $HTTP_CODE"
+echo "--- Response body ---"
 cat builds.json
+echo "--- End response ---"
+
+if [ "$HTTP_CODE" != "200" ]; then
+    echo "Request failed, stopping."
+    exit 1
+fi
 
 LATEST_BUILD=$(jq -r 'map(select(.channel == "STABLE")) | .[0] | .id' builds.json)
 echo "BUILD: $LATEST_BUILD"
