@@ -2,15 +2,17 @@ FROM eclipse-temurin:17-jre
 
 WORKDIR /server
 
-# Download Velocity proxy
-RUN apt-get update && apt-get install -y curl && \
-    curl -o velocity.jar https://api.papermc.io/v2/projects/velocity/versions/3.3.0-SNAPSHOT/builds/latest/downloads/velocity-3.3.0-SNAPSHOT-all.jar
+RUN apt-get update && apt-get install -y curl jq
+
+# Look up the actual latest Velocity version + build, then download it
+RUN LATEST_VERSION=$(curl -s https://api.papermc.io/v2/projects/velocity | jq -r '.versions[-1]') && \
+    LATEST_BUILD=$(curl -s https://api.papermc.io/v2/projects/velocity/versions/$LATEST_VERSION/builds | jq -r '.builds[-1].build') && \
+    curl -o velocity.jar https://api.papermc.io/v2/projects/velocity/versions/$LATEST_VERSION/builds/$LATEST_BUILD/downloads/velocity-$LATEST_VERSION-$LATEST_BUILD.jar
 
 # Download EaglerXServer plugin
 RUN mkdir -p plugins && \
     curl -L -o plugins/EaglerXServer.jar https://github.com/lax1dude/eaglerxserver/releases/latest/download/EaglerXServer.jar
 
-# Copy our config files in (we'll add these next)
 COPY velocity.toml /server/velocity.toml
 COPY eula.txt /server/eula.txt
 
