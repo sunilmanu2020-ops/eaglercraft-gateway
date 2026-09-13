@@ -1,15 +1,14 @@
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:21-jre
 
 WORKDIR /server
 
 RUN apt-get update && apt-get install -y curl jq
 
 RUN UA="eaglercraft-gateway/1.0 (contact: your-email@example.com)" && \
-    LATEST_VERSION=$(curl -s -H "User-Agent: $UA" https://fill.papermc.io/v3/projects/velocity | jq -r '.versions | to_entries[0] | .value[0]') && \
-    echo "VERSION: $LATEST_VERSION" && \
-    LATEST_BUILD=$(curl -s -H "User-Agent: $UA" https://fill.papermc.io/v3/projects/velocity/versions/$LATEST_VERSION/builds | jq -r 'map(select(.channel == "STABLE")) | .[0] | .id') && \
+    VERSION="3.5.1" && \
+    LATEST_BUILD=$(curl -s -H "User-Agent: $UA" https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds | jq -r 'map(select(.channel == "STABLE")) | .[0] | .id') && \
     echo "BUILD: $LATEST_BUILD" && \
-    DOWNLOAD_URL=$(curl -s -H "User-Agent: $UA" https://fill.papermc.io/v3/projects/velocity/versions/$LATEST_VERSION/builds/$LATEST_BUILD | jq -r '.downloads."server:default".url') && \
+    DOWNLOAD_URL=$(curl -s -H "User-Agent: $UA" https://fill.papermc.io/v3/projects/velocity/versions/$VERSION/builds/$LATEST_BUILD | jq -r '.downloads."server:default".url') && \
     echo "URL: $DOWNLOAD_URL" && \
     curl -f -H "User-Agent: $UA" -o velocity.jar "$DOWNLOAD_URL" && \
     ls -la velocity.jar
