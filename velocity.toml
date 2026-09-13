@@ -2,7 +2,7 @@ config-version = "2.7"
 online-mode = false
 [servers]
 minekeep = "wccschoolsmp.minehut.gg:25565"
-try = ["minekeep"]
+try = ["minehut"]
 
 [forced-hosts]
 
